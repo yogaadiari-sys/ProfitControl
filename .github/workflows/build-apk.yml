@@ -16,8 +16,8 @@ jobs:
 
       - name: Extract project ZIP
         run: |
+          mkdir project
           unzip -o ProfitControl_V1_Project.zip -d project
-          cp -r project/.github .
           cp -r project/app .
           cp project/build.gradle.kts .
           cp project/settings.gradle.kts .
@@ -30,9 +30,11 @@ jobs:
           java-version: '17'
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
 
-      - name: Install Android SDK
+      - name: Install Android SDK packages
         run: |
           sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
@@ -42,7 +44,7 @@ jobs:
           gradle-version: '8.9'
 
       - name: Build APK
-        run: gradle assembleDebug
+        run: gradle assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
